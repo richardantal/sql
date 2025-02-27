@@ -6,13 +6,18 @@
 
 buildscript {
     ext {
+        upstream_version = "2.18.0.0"
+        build_tools = "2.18.0-SNAPSHOT"
         opensearch_version = System.getProperty("opensearch.version", "2.18.0-SNAPSHOT")
+        ml_version = "2.18.0-SNAPSHOT"
+        security_version = "2.18.0-SNAPSHOT"
+        job_scheduler_version = "2.18.0-SNAPSHOT"
         isSnapshot = "true" == System.getProperty("build.snapshot", "true")
         buildVersionQualifier = System.getProperty("build.version_qualifier", "")
         version_tokens = opensearch_version.tokenize('-')
         opensearch_build = version_tokens[0] + '.0'
         prometheus_binary_version = "2.37.2"
-        common_utils_version = System.getProperty("common_utils.version", opensearch_build)
+        common_utils_version = System.getProperty("common_utils.version", opensearch_version)
         if (buildVersionQualifier) {
             opensearch_build += "-${buildVersionQualifier}"
         }
@@ -53,14 +58,27 @@ buildscript {
         guava_version = "32.1.3-jre"
     }
 
+    String cldrMavenUrl="http://nexus-private.hortonworks.com/nexus/content/groups/public"
+    String gbnUrl="http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/64087655/solr/0.x/maven-repository"
+
     repositories {
+        maven {
+            url gbnUrl
+            setAllowInsecureProtocol(true);
+            allowInsecureProtocol=true
+        }
+        maven {
+            url cldrMavenUrl;
+            setAllowInsecureProtocol(true);
+            allowInsecureProtocol = true;
+        }
         mavenLocal()
         maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
         mavenCentral()
     }
 
     dependencies {
-        classpath "org.opensearch.gradle:build-tools:${opensearch_version}"
+        classpath "org.opensearch.gradle:build-tools:${build_tools}"
     }
 }
 
@@ -104,13 +122,16 @@ spotless {
 }
 
 allprojects {
-    version = opensearch_version.tokenize('-')[0] + '.0'
+    version = "${opensearch_version}"
+
+    version_tokens = opensearch_version.tokenize('-')
+    opensearch_build = version_tokens[0] + '.0'
     if (buildVersionQualifier) {
-        version += "-${buildVersionQualifier}"
+        opensearch_build += "-${buildVersionQualifier}"
     }
 
     if (isSnapshot) {
-        version += "-SNAPSHOT"
+        opensearch_build += "-SNAPSHOT"
     }
 
     plugins.withId('java') {
@@ -125,8 +146,20 @@ allprojects {
     }
 }
 
+String cldrMavenUrl="http://nexus-private.hortonworks.com/nexus/content/groups/public"
+String gbnUrl="http://cloudera-build-us-west-1.vpc.cloudera.com/s3/build/64087655/solr/0.x/maven-repository"
 subprojects {
     repositories {
+        maven {
+            url gbnUrl
+            setAllowInsecureProtocol(true);
+            allowInsecureProtocol=true
+        }
+        maven {
+            url cldrMavenUrl;
+            setAllowInsecureProtocol(true);
+            allowInsecureProtocol = true;
+        }
         mavenLocal()
         maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
         mavenCentral()

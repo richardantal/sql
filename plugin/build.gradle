@@ -129,7 +129,7 @@ compileTestJava {
 }
 
 dependencies {
-    compileOnly "org.opensearch:opensearch-job-scheduler-spi:${opensearch_build}"
+    compileOnly "org.opensearch:opensearch-job-scheduler-spi:${job_scheduler_version}"
     compileOnly "com.google.guava:guava:${guava_version}"
     compileOnly 'com.google.guava:failureaccess:1.0.2'
 
@@ -151,7 +151,7 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: "${versions.mockito}"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.3'
 
-    zipArchive group: 'org.opensearch.plugin', name:'opensearch-job-scheduler', version: "${opensearch_build}"
+    zipArchive group: 'org.opensearch.plugin', name:'opensearch-job-scheduler', version: "${job_scheduler_version}"
 }
 
 test {
