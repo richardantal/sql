@@ -110,16 +110,11 @@ clean.dependsOn(stopPrometheus)
 
 // 2.0.0-alpha1-SNAPSHOT -> 2.0.0.0-alpha1-SNAPSHOT
 String opensearch_no_snapshot = opensearch_version.replace('-SNAPSHOT', '')
-String[] version_tokens = opensearch_no_snapshot.tokenize('-')
-String opensearch_build = version_tokens[0] + '.0'
-if (version_tokens.length > 1) {
-    opensearch_build += '-' + version_tokens[1]
-}
-String mlCommonsRemoteFile = 'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/' + opensearch_no_snapshot + '/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-ml-' + opensearch_build + '.zip'
+String mlCommonsRemoteFile = 'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/' + opensearch_no_snapshot + '/latest/linux/x64/tar/builds/opensearch/plugins/opensearch-ml-' + ml_version + '.zip'
 String mlCommonsPlugin = 'opensearch-ml'
 
 String bwcOpenSearchJSDownload = 'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/' + opensearch_no_snapshot + '/latest/linux/x64/tar/builds/' +
-        'opensearch/plugins/opensearch-job-scheduler-' + opensearch_build + '.zip'
+        'opensearch/plugins/opensearch-job-scheduler-' + job_scheduler_version + '.zip'
 String jsPlugin = 'opensearch-job-scheduler'
 
 testClusters {
@@ -136,7 +131,7 @@ testClusters {
                         if (!dir.exists()) {
                             dir.mkdirs()
                         }
-                        File f = new File(dir, mlCommonsPlugin + '-' + opensearch_build + '.zip')
+                        File f = new File(dir, mlCommonsPlugin + '-' + ml_version + '.zip')
                         if (!f.exists()) {
                             new URL(mlCommonsRemoteFile).withInputStream{ ins -> f.withOutputStream{ it << ins } }
                         }
@@ -178,7 +173,7 @@ def getJobSchedulerPlugin(String jsPlugin, String bwcOpenSearchJSDownload) {
                     }
 
                     // Define the file path
-                    File f = new File(dir, jsPlugin + '-' + opensearch_build + '.zip')
+                    File f = new File(dir, jsPlugin + '-' + job_scheduler_version + '.zip')
 
                     // Download file if it doesn't exist
                     if (!f.exists()) {

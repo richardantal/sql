@@ -63,17 +63,21 @@ ext {
     noticeFile = rootProject.file('NOTICE')
 
     getSecurityPluginDownloadLink = { ->
-        var repo = "https://aws.oss.sonatype.org/content/repositories/snapshots/org/opensearch/plugin/" +
-                   "opensearch-security/$opensearch_build_snapshot/"
-        var metadataFile = Paths.get(projectDir.toString(), "build", "maven-metadata.xml").toAbsolutePath().toFile()
-        download.run {
-            src repo + "maven-metadata.xml"
-            dest metadataFile
-        }
-        def metadata = new XmlParser().parse(metadataFile)
-        def securitySnapshotVersion = metadata.versioning.snapshotVersions[0].snapshotVersion[0].value[0].text()
+        var cldr_mvn_repo = "http://nexus-private.hortonworks.com/nexus/content/groups/public"
+        var repo = cldr_mvn_repo + "/org/opensearch/plugin/" +
+                "opensearch-security/$security_version/"
 
-        return repo + "opensearch-security-${securitySnapshotVersion}.zip"
+//        var repo = "https://aws.oss.sonatype.org/content/repositories/releases/org/opensearch/plugin/" +
+//                   "opensearch-security/${upstream_version}/"
+//        var metadataFile = Paths.get(projectDir.toString(), "build", "maven-metadata.xml").toAbsolutePath().toFile()
+//        download.run {
+//            src repo + "maven-metadata.xml"
+//            dest metadataFile
+//        }
+//        def metadata = new XmlParser().parse(metadataFile)
+//        def securitySnapshotVersion = metadata.versioning.snapshotVersions[0].snapshotVersion[0].value[0].text()
+
+        return repo + "opensearch-security-${security_version}.zip"
     }
 
     var projectAbsPath = projectDir.getAbsolutePath()
@@ -188,7 +192,7 @@ dependencies {
     testImplementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
     testCompileOnly 'org.apiguardian:apiguardian-api:1.1.2'
 
-    zipArchive group: 'org.opensearch.plugin', name:'opensearch-job-scheduler', version: "${opensearch_build}"
+    zipArchive group: 'org.opensearch.plugin', name:'opensearch-job-scheduler', version: "${job_scheduler_version}"
 }
 
 dependencyLicenses.enabled = false
